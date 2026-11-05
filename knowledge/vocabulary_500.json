@@ -1,0 +1,122 @@
+[
+  {
+    "concept": "dog",
+    "english": "Dog",
+    "chinese": "狗",
+    "spanish": "Perro"
+  },
+  {
+    "concept": "cat",
+    "english": "Cat",
+    "chinese": "貓",
+    "spanish": "Gato"
+  },
+  {
+    "concept": "apple",
+    "english": "Apple",
+    "chinese": "蘋果",
+    "spanish": "Manzana"
+  },
+  {
+    "concept": "water",
+    "english": "Water",
+    "chinese": "水",
+    "spanish": "Agua"
+  },
+  {
+    "concept": "red",
+    "english": "Red",
+    "chinese": "紅色",
+    "spanish": "Rojo"
+  },
+  {
+    "concept": "blue",
+    "english": "Blue",
+    "chinese": "藍色",
+    "spanish": "Azul"
+  },
+  {
+    "concept": "big",
+    "english": "Big",
+    "chinese": "大",
+    "spanish": "Grande"
+  },
+  {
+    "concept": "small",
+    "english": "Small",
+    "chinese": "小",
+    "spanish": "Pequeño"
+  },
+  {
+    "concept": "happy",
+    "english": "Happy",
+    "chinese": "快樂",
+    "spanish": "Feliz"
+  },
+  {
+    "concept": "jump",
+    "english": "Jump",
+    "chinese": "跳",
+    "spanish": "Saltar"
+  },
+  {
+    "concept": "mom",
+    "english": "Mom",
+    "chinese": "媽媽",
+    "spanish": "Mamá"
+  },
+  {
+    "concept": "dad",
+    "english": "Dad",
+    "chinese": "爸爸",
+    "spanish": "Papá"
+  },
+  {
+    "concept": "one",
+    "english": "One",
+    "chinese": "一",
+    "spanish": "Uno"
+  },
+  {
+    "concept": "two",
+    "english": "Two",
+    "chinese": "二",
+    "spanish": "Dos"
+  },
+  {
+    "concept": "three",
+    "english": "Three",
+    "chinese": "三",
+    "spanish": "Tres"
+  },
+  {
+    "concept": "sun",
+    "english": "Sun",
+    "chinese": "太陽",
+    "spanish": "Sol"
+  },
+  {
+    "concept": "moon",
+    "english": "Moon",
+    "chinese": "月亮",
+    "spanish": "Luna"
+  },
+  {
+    "concept": "book",
+    "english": "Book",
+    "chinese": "書",
+    "spanish": "Libro"
+  },
+  {
+    "concept": "ball",
+    "english": "Ball",
+    "chinese": "球",
+    "spanish": "Pelota"
+  },
+  {
+    "concept": "friend",
+    "english": "Friend",
+    "chinese": "朋友",
+    "spanish": "Amigo"
+  }
+]
