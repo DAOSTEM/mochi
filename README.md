@@ -49,10 +49,16 @@ works as a Baby-level pet that uses taught facts and local math.
 
 ## Voice on the Raspberry Pi
 
-    AI_PET_VOICE=1 AI_PET_LISTEN=1 python3 main.py
+Voice is **automatic** when the Voice HAT is detected: Mochi talks and listens, and
+the child never needs a keyboard. The child says a name, answers by voice, and picks
+activities by saying a word: *math, puzzle, word, chat, teach me, quiz me, progress*.
+Say **goodbye** to stop, or **shut down** to turn the Pi off.
+
+On a normal computer it falls back to typing. Force it with `AI_PET_VOICE=0/1`
+and `AI_PET_LISTEN=0/1`.
 
 - Hardware: Pi 3A+, AIY Voice HAT v1, Raspberry Pi OS Lite 64-bit
-- Packages: `espeak-ng`, `sox`, `vosk` + `vosk-model-small-en-us-0.15`
+- Packages: `espeak-ng`, `sox`, `vosk` + a Vosk English model in `~/vosk-model` (or `~/vosk-model-small-en-us-0.15`, or set `AI_PET_VOSK`)
 - Audio device defaults to `plughw:1,0` (`AI_PET_AUDIO` to change)
 
 ## Files

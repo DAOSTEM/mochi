@@ -8,7 +8,7 @@ Every question goes through the same order:
 """
 from . import llm
 from .safety import check_safety, reply_for, save_alert
-from .mathlocal import try_math
+from .mathlocal import try_math, spoken_to_math
 from .teach import find_facts, stage, teach_flow
 from .voice import say, listen
 from .db import add_memory
@@ -35,14 +35,17 @@ def answer_from_facts(facts):
 
 def chat(child_id, child):
     name = child["name"]
-    say("Ask me anything! Say 'teach' to teach me, or 'bye' to stop.")
+    say("Ask me anything! Say teach to teach me. Say bye to go back, or goodbye to turn me off.")
     while True:
         q = listen("You: ")
         low = q.lower().strip(" .!?")
         if low == "":
             continue
-        if low in ("bye", "end", "goodbye"):
+        if low in ("goodbye", "good bye", "stop"):
             say("Bye for now!")
+            return "quit"
+        if low in ("bye", "end", "back", "menu"):
+            say("Okay, back to the menu.")
             return
         if low in ("teach", "teach you", "let me teach you"):
             teach_flow(child_id)
@@ -56,7 +59,7 @@ def chat(child_id, child):
             continue
 
         # 2. math
-        m = try_math(q)
+        m = try_math(spoken_to_math(q))
         if m is not None:
             say(m)
             continue

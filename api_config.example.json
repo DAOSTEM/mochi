@@ -1,5 +1,5 @@
 {
-  "api_key": "",
+  "api_key": "PUT-THE-PARENTS-KEY-HERE",
   "base_url": "https://api.meta.ai/v1",
-  "model": "muse-spark-1.3"
+  "model": "MODEL-NAME-FROM-dev.meta.ai"
 }

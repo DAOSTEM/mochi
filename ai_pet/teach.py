@@ -79,7 +79,7 @@ FOLLOW_UPS = [
 def teach_flow(child_id):
     """Child teaches, Mochi asks a question back, then says it in its own words."""
     before = stage(child_id)[0]
-    say("Yay! Teach me something. What is it about? (one or two words, or type skip)")
+    say("Yay! Teach me something. What is it about? (one or two words, or say skip)")
     topic = listen().strip()
     if topic.lower() in ("", "skip", "bye", "end"):
         return
