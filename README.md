@@ -61,6 +61,17 @@ and `AI_PET_LISTEN=0/1`.
 - Packages: `espeak-ng`, `sox`, `vosk` + a Vosk English model in `~/vosk-model` (or `~/vosk-model-small-en-us-0.15`, or set `AI_PET_VOSK`)
 - Audio device defaults to `plughw:1,0` (`AI_PET_AUDIO` to change)
 
+## Set up a new Pi (one step)
+
+On a fresh Raspberry Pi OS Lite 64-bit with the Voice HAT attached:
+
+    wget https://raw.githubusercontent.com/DAOSTEM/mochi/main/setup_mochi.sh
+    bash setup_mochi.sh
+
+It installs everything Mochi needs (programs, `vosk` and its speech model, the sound-card
+setting), downloads this program to `~/mochi`, and checks the result. Safe to run again.
+Reboot if it asks you to, then run `python3 check_mic.py` and `python3 main.py`.
+
 ## Files
 
 - `ai_pet/teach.py` — teaching, quizzes, growth stages

@@ -1,6 +1,6 @@
 """Mochi grows when the child teaches it.
 
-points = facts taught + times the child correctly remembered a fact in a quiz
+points = facts taught + quiz answers remembered + correct game answers + teacher bonus (all saved)
 The stage (and what Mochi can do) depends on points, not on time.
 """
 import random, re
@@ -21,11 +21,28 @@ STOP = set("a an the is are was were of to in on at and or it its this that what
 def words(text):
     return {w for w in re.findall(r"[a-z0-9']+", text.lower()) if w not in STOP and len(w) > 1}
 
+GAME_POINTS = 1  # points for each correct answer in the math / logic / word games
+
 def points(child_id):
+    """Saved in data/ai_pet.db: facts taught + quiz answers + the points_log table."""
     with connect() as con:
         r = con.execute("SELECT COUNT(*) n, COALESCE(SUM(quiz_correct),0) c FROM taught WHERE child_id=?",
                         (child_id,)).fetchone()
-    return r["n"] + r["c"]
+        extra = con.execute("SELECT COALESCE(SUM(amount),0) FROM points_log WHERE child_id=?",
+                            (child_id,)).fetchone()[0]
+    return r["n"] + r["c"] + extra
+
+def add_points(child_id, amount, reason):
+    """Save points (game wins, teacher bonus...). Kept in the points_log table."""
+    with connect() as con:
+        con.execute("INSERT INTO points_log(child_id,amount,reason,created_at) VALUES(?,?,?,?)",
+                    (child_id, amount, reason, now()))
+        con.commit()
+
+def award_game(child_id, reason):
+    before = stage(child_id)[0]
+    add_points(child_id, GAME_POINTS, reason)
+    check_growth(child_id, before)
 
 def stage(child_id):
     """Return (index, name, description, points)."""

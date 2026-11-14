@@ -40,6 +40,9 @@ def init_db():
           id INTEGER PRIMARY KEY, child_id INTEGER NOT NULL REFERENCES children(id) ON DELETE CASCADE,
           topic TEXT NOT NULL, fact TEXT NOT NULL, quiz_attempts INTEGER DEFAULT 0,
           quiz_correct INTEGER DEFAULT 0, created_at TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS points_log(
+          id INTEGER PRIMARY KEY, child_id INTEGER NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          amount INTEGER NOT NULL, reason TEXT NOT NULL, created_at TEXT NOT NULL);
         """)
         con.commit()
 

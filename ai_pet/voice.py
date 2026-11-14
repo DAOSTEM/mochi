@@ -7,7 +7,7 @@ Typing still works on a normal computer (no Voice HAT) or when you set:
 
 Run check_mic.py first if Mochi talks but does not hear you.
 """
-import json, os, subprocess, time
+import glob, json, os, shutil, subprocess, sys, time
 from pathlib import Path
 
 AUDIO = os.environ.get("AI_PET_AUDIO", "plughw:1,0")
@@ -53,12 +53,41 @@ def _on(name):
 def _play(path):
     subprocess.run(["aplay", "-q", "-D", AUDIO, path], check=True)
 
+_piper_note_shown = False
+
+def piper_model():
+    """A Piper voice (.onnx) if there is one: AI_PET_PIPER, ~/piper/*.onnx. None = use espeak-ng."""
+    if os.environ.get("AI_PET_TTS", "").lower() == "espeak":
+        return None
+    p = os.environ.get("AI_PET_PIPER", "")
+    if p and os.path.isfile(p):
+        return p
+    found = sorted(glob.glob(os.path.expanduser("~/piper/*.onnx")))
+    return found[0] if found else None
+
+def _make_wav(text):
+    """Write /tmp/pet.wav. Natural Piper voice if installed, otherwise the old espeak-ng voice."""
+    global _piper_note_shown
+    model = piper_model()
+    if model:
+        cmd = ["piper"] if shutil.which("piper") else [sys.executable, "-m", "piper"]
+        try:
+            subprocess.run(cmd + ["--model", model, "--output_file", "/tmp/pet.wav"],
+                           input=text.encode("utf-8"), check=True,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+            return
+        except (OSError, subprocess.SubprocessError):
+            if not _piper_note_shown:
+                _piper_note_shown = True
+                print("(Piper voice not working, using espeak-ng instead)")
+    subprocess.run(["espeak-ng", "-w", "/tmp/pet.wav", text], check=True)
+
 def say(text):
     print("Mochi: " + text)
     if not _on("AI_PET_VOICE"):
         return
     try:
-        subprocess.run(["espeak-ng", "-w", "/tmp/pet.wav", text], check=True)
+        _make_wav(text)
         subprocess.run(["sox", "/tmp/pet.wav", "/tmp/pet_quiet.wav", "vol", VOLUME], check=True)
         _play("/tmp/pet_quiet.wav")
         time.sleep(0.3)  # let the speaker go quiet so Mochi does not hear itself

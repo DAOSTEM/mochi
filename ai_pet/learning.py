@@ -2,6 +2,7 @@ import json, random
 from pathlib import Path
 from .db import connect, now, add_memory
 from .voice import say, listen
+from .teach import award_game
 from .mathlocal import words_to_digits, NUM, SOUNDS_LIKE
 
 NUMBER_WORDS = list(NUM) + list(SOUNDS_LIKE) + ["skip"]
@@ -55,6 +56,7 @@ def math_game(child_id):
         say("Here's a hint: "+h+" Try again, or say skip.")
         correct=is_answer(listen(words=NUMBER_WORDS),a)
     record(child_id,"math","number_operations",correct,used_hint)
+    if correct: award_game(child_id,"math")
     say("You got it! Great job!" if correct else f"Nice try. The answer is {a}. We'll practice again later.")
     add_memory(child_id,"learning","Played a math game.")
 
@@ -72,6 +74,7 @@ def logic_game(child_id):
         say("Let's think. "+h+" Try once more.")
         correct=is_answer(listen(),a)
     record(child_id,"logic","patterns_and_reasoning",correct,hint)
+    if correct: award_game(child_id,"logic")
     say("Wonderful thinking!" if correct else f"The answer is {a}. Good trying!")
     add_memory(child_id,"learning","Played a logic game.")
 
@@ -88,6 +91,7 @@ def language_moment(child_id):
         con.execute("""UPDATE vocabulary SET recognized=recognized+?,
           recalled=recalled+?,used_correctly=used_correctly+? WHERE id=?""",
           (int(ok),int(ok),int(ok),r["id"]))
+    if ok: award_game(child_id,"word")
     say("Great remembering!" if ok else f"That's okay! {r['english']} is the word.")
     add_memory(child_id,"vocabulary",f"Met the word {r['english']}.")
 
