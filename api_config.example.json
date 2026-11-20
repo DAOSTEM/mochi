@@ -1,5 +1,6 @@
 {
   "api_key": "PUT-THE-PARENTS-KEY-HERE",
   "base_url": "https://api.meta.ai/v1",
-  "model": "MODEL-NAME-FROM-dev.meta.ai"
+  "model": "MODEL-NAME-FROM-dev.meta.ai",
+  "gemini_api_key": "OPTIONAL-GEMINI-KEY-FOR-live_mochi.py"
 }

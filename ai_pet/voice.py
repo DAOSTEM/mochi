@@ -7,10 +7,15 @@ Typing still works on a normal computer (no Voice HAT) or when you set:
 
 Run check_mic.py first if Mochi talks but does not hear you.
 """
-import glob, json, os, shutil, subprocess, sys, time
+import array, glob, json, os, shutil, subprocess, sys, time
 from pathlib import Path
 
-AUDIO = os.environ.get("AI_PET_AUDIO", "plughw:1,0")
+AUDIO = os.environ.get("AI_PET_AUDIO", "plughw:1,0")   # speaker (and mic if AI_PET_MIC is not set)
+MIC = os.environ.get("AI_PET_MIC", AUDIO)               # e.g. a USB microphone: plughw:2,0
+try:
+    MIC_GAIN = float(os.environ.get("AI_PET_MIC_GAIN", "1"))   # make a quiet mic louder: 3, 4, 6...
+except ValueError:
+    MIC_GAIN = 1.0
 VOLUME = os.environ.get("AI_PET_VOLUME", "0.2")
 LISTEN_SECONDS = 12
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,6 +108,16 @@ def _beep():
     except (OSError, subprocess.CalledProcessError):
         pass
 
+def boost(data, gain):
+    """Make 16-bit audio louder by `gain` (clipped so it cannot wrap around)."""
+    if gain == 1:
+        return data
+    a = array.array("h", data[: len(data) // 2 * 2])
+    for i, v in enumerate(a):
+        x = int(v * gain)
+        a[i] = 32767 if x > 32767 else -32768 if x < -32768 else x
+    return a.tobytes()
+
 def _listen_vosk(words):
     global _model
     from vosk import Model, KaldiRecognizer
@@ -113,7 +128,7 @@ def _listen_vosk(words):
     else:
         rec = KaldiRecognizer(_model, 16000)
     proc = subprocess.Popen(
-        ["arecord", "-D", AUDIO, "-f", "S16_LE", "-r", "16000", "-c", "1", "-t", "raw"],
+        ["arecord", "-D", MIC, "-f", "S16_LE", "-r", "16000", "-c", "1", "-t", "raw"],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     end = time.time() + LISTEN_SECONDS
     try:
@@ -121,7 +136,7 @@ def _listen_vosk(words):
             data = proc.stdout.read(4000)
             if not data:
                 break
-            if rec.AcceptWaveform(data):
+            if rec.AcceptWaveform(boost(data, MIC_GAIN)):
                 text = json.loads(rec.Result()).get("text", "").replace("[unk]", "").strip()
                 if text:
                     return " ".join(text.split())

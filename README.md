@@ -61,6 +61,26 @@ and `AI_PET_LISTEN=0/1`.
 - Packages: `espeak-ng`, `sox`, `vosk` + a Vosk English model in `~/vosk-model` (or `~/vosk-model-small-en-us-0.15`, or set `AI_PET_VOSK`)
 - Audio device defaults to `plughw:1,0` (`AI_PET_AUDIO` to change)
 
+## Talk with Gemini Live (optional, no menu)
+
+    export GEMINI_API_KEY=...        # or "gemini_api_key" in api_config.json (never on GitHub)
+    python3 test_gemini.py           # 10-second check, plays a hello
+    python3 live_mochi.py            # the child just talks
+
+Gemini listens and talks in one step (much better than Vosk + espeak). Mochi's idea is
+unchanged: Gemini calls three small tools (`identify_child`, `learn_fact`, `quiz_result`)
+so points and growth stages are still saved in `data/ai_pet.db`, and a **Baby** only
+answers from what the child taught it. The keyword safety check still runs on Gemini's
+transcript of the child's words and writes `data/alerts.txt`.
+
+- While Mochi talks the microphone is muted (the HAT speaker is next to the mic).
+  `AI_PET_LIVE_BARGEIN=1` lets the child interrupt; use it only with a headset.
+- If it cannot start (no key, no internet) the classic Mochi starts instead.
+- Privacy: the child's voice goes to Google. Parents must agree, and use a key whose
+  terms do not train on prompts (check the plan's data terms).
+- Model: `gemini-3.8-live` by default, change with `AI_PET_LIVE_MODEL`. Sessions last
+  about 15 minutes, then Mochi reconnects by itself.
+
 ## Set up a new Pi (one step)
 
 On a fresh Raspberry Pi OS Lite 64-bit with the Voice HAT attached:
@@ -77,6 +97,7 @@ Reboot if it asks you to, then run `python3 check_mic.py` and `python3 main.py`.
 - `ai_pet/teach.py` — teaching, quizzes, growth stages
 - `ai_pet/chat.py` — safety → math → taught facts → cloud AI
 - `ai_pet/safety.py`, `ai_pet/mathlocal.py` — on-device filters
+- `ai_pet/live.py` — Gemini Live voice (`live_mochi.py` starts it)
 - `ai_pet/llm.py` — cloud AI call; `ai_pet/voice.py` — speech in/out
 - `ai_pet/learning.py` — math, logic and vocabulary games (English, 中文, Español)
 

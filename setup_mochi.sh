@@ -67,6 +67,12 @@ else
     python3 -m pip install --break-system-packages vosk || { echo "pip install vosk failed"; exit 1; }
     good "vosk installed"
 fi
+if python3 -c "import google.genai" 2>/dev/null; then
+    good "google-genai (Gemini Live) already installed"
+else
+    python3 -m pip install --break-system-packages google-genai && good "google-genai installed (for live_mochi.py)" \
+        || echo "   note: google-genai not installed; classic Mochi still works (python3 main.py)"
+fi
 
 say "6/8 Speech model"
 if [ -d "$HOME/vosk-model/am" ] && [ -d "$HOME/vosk-model/conf" ]; then
